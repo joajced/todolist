@@ -3,12 +3,10 @@ package com.github.joajced.todolist.controller;
 import com.github.joajced.todolist.repository.Repository;
 import com.github.joajced.todolist.model.Task;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class taskController {
@@ -26,9 +24,24 @@ public class taskController {
         return taskRepository.findAll();
     }
 
+    @GetMapping("/api/tasks/{id}")
+    public Task getTaskById(@PathVariable Long id) {
+
+        Optional<Task> optionalTask = taskRepository.findById(id);
+
+        if (optionalTask.isPresent())
+            return optionalTask.get();
+        throw new RuntimeException("Task with id " + id + " couldn't be found");
+    }
+
     @PostMapping("/api/tasks")
     public Task createTask(@RequestBody Task task) {
         return taskRepository.save(task);
+    }
+
+    @DeleteMapping("/api/tasks/{id}")
+    public void deleteTask(@PathVariable Long id) {
+        taskRepository.deleteById(id);
     }
 
 }
