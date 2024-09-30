@@ -22,6 +22,6 @@ public class Task {
     private String content;
 
     @Column
-    private boolean done;
+    private boolean isDone;
 
 }
