@@ -46,7 +46,7 @@ header {
     overflow-y: scroll;
 
     height: 85%;
-    width: 50%;
+    width: 60%;
 
     padding: 30px 60px 120px 60px;
 }
@@ -54,7 +54,7 @@ header {
 .task-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
     width: 100%;
 }
 
