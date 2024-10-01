@@ -16,7 +16,7 @@ function processJsonData(jsonData) {
         listItem.classList.add("task");
         listItem.setAttribute("id", `task-${item.id}`);
         
-        listItem.innerHTML = `<input type="checkbox" class="task-check" id="checkbox-${item.id}">
+        listItem.innerHTML = `<input type="checkbox" class="task-check" id="checkbox-${item.id}" onclick="patchTask(this)">
                               <label for="checkbox-${item.id}" class="task-content">${item.content}</label>
 
                               <div class="button-container">
@@ -47,6 +47,34 @@ createTaskForm.addEventListener('submit', event => {
     refreshContent();
 });
 
+// PATCH request (isDone)
+function patchTask(checkbox) {
+    let taskPatchId = Number(checkbox.id.split('-')[1]);
+    const checkboxPatch = document.getElementById(`checkbox-${taskPatchId}`);
+
+    if (checkboxPatch.checked === true) {
+
+        fetch(`http://localhost:8080/api/tasks/${taskPatchId}`, {
+            method: 'PATCH',
+            headers: {
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ "done": true }),
+        }).then(res => res.json());
+
+    } else {
+
+        fetch(`http://localhost:8080/api/tasks/${taskPatchId}`, {
+            method: 'PATCH',
+            headers: {
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ "done": false }),
+        }).then(res => res.json());
+
+    }
+}
+
 // DELETE request
 function deleteTask(button) {
     let taskDeleteId = Number(button.id.split('-')[1]);
@@ -54,7 +82,7 @@ function deleteTask(button) {
     fetch(`http://localhost:8080/api/tasks/${taskDeleteId}`, {
         method: 'DELETE'
     });
-    
+
     refreshContent();
 };
 
