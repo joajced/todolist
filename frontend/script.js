@@ -10,7 +10,7 @@ function getTasks() {
         .then(data => processJsonData(data))
         .catch(error => {
             console.error('There was a problem with the fetch operation:', error);
-          });
+    });
 };
 
 function processJsonData(jsonData) {
@@ -28,7 +28,7 @@ function processJsonData(jsonData) {
                               </div>
                               
                               <form action="submit" class="update-task-form hide" id="task-${item.id}-update-form">
-                                  <input type="text" name="content" placeholder="Edit task...">
+                                  <input type="text" name="content" placeholder="Edit task..." autocomplete="off">
                   
                                   <div class="button-container" id="task-${item.id}-button-container-edit">
                                       <button type="submit" class="task-button task-submit" id="submit-${item.id}">SAVE</button>
@@ -59,7 +59,7 @@ createTaskForm.addEventListener('submit', event => {
         body: JSON.stringify(formObject)
     }).then(() => {
         createTaskForm.reset();
-        location.reload();
+        refreshContent();
     }).catch(error => {
         console.error('There was a problem with the fetch operation:', error);
     });
@@ -143,8 +143,13 @@ function deleteTask(button) {
     fetch(`http://localhost:8080/api/tasks/${taskDeleteId}`, {
         method: 'DELETE'
     }).then(() => {
-        location.reload();
+        refreshContent();
     }).catch(error => {
         console.error('There was a problem with the fetch operation:', error);
     });
 };
+
+function refreshContent() {
+    taskList.innerHTML = "";
+    getTasks();
+}

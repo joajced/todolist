@@ -157,6 +157,10 @@ input[type="checkbox"]:checked + .task-content {
     transition: border-color 0.15s ease-in-out;
 }
 
+.create-task-form-container:hover {
+    border-color: #dbdbdb;
+}
+
 .create-task-form-container:focus-within {
     border-color: #A78CFF;
 }
@@ -196,6 +200,10 @@ input[type="checkbox"]:checked + .task-content {
 .create-task-form-container button {
     color: #8e8e8e;
     transition: color 0.15s ease-in-out;
+}
+
+.create-task-form-container:hover button {
+    color: #dbdbdb;
 }
 
 .create-task-form-container:focus-within button {
