@@ -6,8 +6,11 @@ getTasks();
 // GET request
 function getTasks() {
     fetch("http://localhost:8080/api/tasks")
-        .then((res) => res.json())
-        .then((data) => processJsonData(data));
+        .then(res => res.json())
+        .then(data => processJsonData(data))
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+          });
 };
 
 function processJsonData(jsonData) {
@@ -34,6 +37,10 @@ function processJsonData(jsonData) {
                               </form>`;
 
         taskList.appendChild(listItem);
+
+        if (item.done === true) {
+            document.getElementById(`checkbox-${item.id}`).checked = true;
+        }
     });
 };
 
@@ -50,38 +57,28 @@ createTaskForm.addEventListener('submit', event => {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(formObject)
-    }).then(res => res.json());
-
-    createTaskForm.reset();
-    refreshContent();
+    }).then(() => {
+        createTaskForm.reset();
+        location.reload();
+    }).catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+    });
 });
 
-// PATCH request (isDone)
+// PATCH request (done)
 function patchTask(checkbox) {
     let taskPatchId = Number(checkbox.id.split('-')[1]);
     const checkboxPatch = document.getElementById(`checkbox-${taskPatchId}`);
 
-    if (checkboxPatch.checked === true) {
-
-        fetch(`http://localhost:8080/api/tasks/${taskPatchId}`, {
-            method: 'PATCH',
-            headers: {
-            'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ "done": true }),
-        }).then(res => res.json());
-
-    } else {
-
-        fetch(`http://localhost:8080/api/tasks/${taskPatchId}`, {
-            method: 'PATCH',
-            headers: {
-            'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ "done": false }),
-        }).then(res => res.json());
-
-    }
+    fetch(`http://localhost:8080/api/tasks/${taskPatchId}`, {
+        method: 'PATCH',
+        headers: {
+        'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ "done": checkboxPatch.checked }),
+    }).catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+    });
 }
 
 // PATCH request (content)
@@ -111,7 +108,6 @@ function hideRename(button) {
     buttonContainer.classList.remove("hide");
 
     updateForm.classList.add("hide");
-
     updateForm.reset();
 }
 
@@ -129,10 +125,15 @@ taskList.addEventListener("submit", event => {
         'Content-Type': 'application/json',
         },
         body: JSON.stringify({ "content": formObject.content }),
-    }).then(res => res.json());
-
-    event.target.reset();
-    refreshContent();
+    }).then(res => res.json())
+    .then(data => {
+        const updatedTask = document.getElementById(`content-${taskRenameId}`);
+        updatedTask.innerText = data.content;
+        hideRename(document.getElementById(`cancel-${taskRenameId}`));
+        event.target.reset();
+    }).catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+    });
 });
 
 // DELETE request
@@ -141,12 +142,9 @@ function deleteTask(button) {
 
     fetch(`http://localhost:8080/api/tasks/${taskDeleteId}`, {
         method: 'DELETE'
+    }).then(() => {
+        location.reload();
+    }).catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
     });
-
-    refreshContent();
-};
-
-function refreshContent() {
-    taskList.innerHTML = "";
-    setTimeout(() => getTasks(), 100);
 };

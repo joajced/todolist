@@ -10,23 +10,24 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
+@RequestMapping(path = "/api")
 @CrossOrigin(origins="http://127.0.0.1:5500")
 public class taskController {
 
     @Autowired
     private Repository taskRepository;
 
-    @GetMapping("/api")
+    @GetMapping
     public String welcome() {
         return "Welcome to your to-do list!";
     }
 
-    @GetMapping("/api/tasks")
+    @GetMapping("/tasks")
     public List<Task> getTasks() {
         return taskRepository.findAll();
     }
 
-    @GetMapping("/api/tasks/{id}")
+    @GetMapping("/tasks/{id}")
     public Task getTaskById(@PathVariable Long id) {
 
         Optional<Task> optionalTask = taskRepository.findById(id);
@@ -36,12 +37,12 @@ public class taskController {
         throw new RuntimeException("Task with id " + id + " does not exist.");
     }
 
-    @PostMapping("/api/tasks")
+    @PostMapping("/tasks")
     public Task createTask(@RequestBody Task task) {
         return taskRepository.save(task);
     }
 
-    @PutMapping("/api/tasks/{id}")
+    @PutMapping("/tasks/{id}")
     public Task updateTask(@PathVariable Long id, @RequestBody Task newTask) {
 
         Optional<Task> needsUpdate = taskRepository.findById(id);
@@ -55,7 +56,7 @@ public class taskController {
         throw new RuntimeException("Task with id " + id + " does not exist.");
     }
 
-    @PatchMapping("/api/tasks/{id}")
+    @PatchMapping("/tasks/{id}")
     public Task patchTask(@PathVariable Long id, @RequestBody Map<String, Object> fields) {
 
         Optional<Task> needsPatch = taskRepository.findById(id);
@@ -77,7 +78,7 @@ public class taskController {
         throw new RuntimeException("Task with id " + id + " does not exist.");
     }
 
-    @DeleteMapping("/api/tasks/{id}")
+    @DeleteMapping("/tasks/{id}")
     public void deleteTask(@PathVariable Long id) {
         taskRepository.deleteById(id);
     }
