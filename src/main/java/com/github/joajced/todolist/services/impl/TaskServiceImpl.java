@@ -1,49 +1,48 @@
-package com.github.joajced.todolist.controller;
+package com.github.joajced.todolist.services.impl;
 
-import com.github.joajced.todolist.repository.Repository;
 import com.github.joajced.todolist.model.Task;
+import com.github.joajced.todolist.repository.TaskRepository;
+import com.github.joajced.todolist.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@RestController
-@RequestMapping(path = "/api")
-@CrossOrigin(origins="http://127.0.0.1:5500")
-public class taskController {
+@Service
+public class TaskServiceImpl implements TaskService {
+
+    private TaskRepository taskRepository;
 
     @Autowired
-    private Repository taskRepository;
-
-    @GetMapping
-    public String welcome() {
-        return "Welcome to your to-do list!";
+    public TaskServiceImpl(TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
     }
 
-    @GetMapping("/tasks")
+    @Override
     public List<Task> getTasks() {
         return taskRepository.findAll();
     }
 
-    @GetMapping("/tasks/{id}")
-    public Task getTaskById(@PathVariable Long id) {
+    @Override
+    public Task getTaskById(Long id) {
 
         Optional<Task> optionalTask = taskRepository.findById(id);
 
         if (optionalTask.isPresent())
             return optionalTask.get();
         throw new RuntimeException("Task with id " + id + " does not exist.");
+
     }
 
-    @PostMapping("/tasks")
-    public Task createTask(@RequestBody Task task) {
+    @Override
+    public Task createTask(Task task) {
         return taskRepository.save(task);
     }
 
-    @PutMapping("/tasks/{id}")
-    public Task updateTask(@PathVariable Long id, @RequestBody Task newTask) {
+    @Override
+    public Task updateTask(Long id, Task newTask) {
 
         Optional<Task> needsUpdate = taskRepository.findById(id);
 
@@ -54,10 +53,11 @@ public class taskController {
             return taskRepository.save(needsUpdate.get());
         }
         throw new RuntimeException("Task with id " + id + " does not exist.");
+
     }
 
-    @PatchMapping("/tasks/{id}")
-    public Task patchTask(@PathVariable Long id, @RequestBody Map<String, Object> fields) {
+    @Override
+    public Task patchTask(Long id, Map<String, Object> fields) {
 
         Optional<Task> needsPatch = taskRepository.findById(id);
 
@@ -76,10 +76,11 @@ public class taskController {
             return taskRepository.save(needsPatch.get());
         }
         throw new RuntimeException("Task with id " + id + " does not exist.");
+
     }
 
-    @DeleteMapping("/tasks/{id}")
-    public void deleteTask(@PathVariable Long id) {
+    @Override
+    public void deleteTask(Long id) {
         taskRepository.deleteById(id);
     }
 
