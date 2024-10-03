@@ -1,6 +1,8 @@
 package com.github.joajced.todolist.services.impl;
 
 import com.github.joajced.todolist.model.Task;
+import com.github.joajced.todolist.model.TaskDTO;
+import com.github.joajced.todolist.model.TaskDTOMapper;
 import com.github.joajced.todolist.repository.TaskRepository;
 import com.github.joajced.todolist.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,59 +11,63 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskServiceImpl implements TaskService {
 
-    private TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
+    private final TaskDTOMapper taskDTOMapper;
 
     @Autowired
-    public TaskServiceImpl(TaskRepository taskRepository) {
+    public TaskServiceImpl(TaskRepository taskRepository, TaskDTOMapper taskDTOMapper) {
+
         this.taskRepository = taskRepository;
+        this.taskDTOMapper = taskDTOMapper;
+
     }
 
     @Override
-    public List<Task> getTasks() {
-        return taskRepository.findAll();
+    public List<TaskDTO> getTasks() {
+
+        return taskRepository.findAll()
+                .stream()
+                .map(taskDTOMapper::toDTO)
+                .collect(Collectors.toList());
+
     }
 
     @Override
-    public Task getTaskById(Long id) {
+    public TaskDTO getTaskById(Long id) {
 
-        Optional<Task> optionalTask = taskRepository.findById(id);
+        Optional<TaskDTO> optionalTask = taskRepository.findById(id)
+                                            .map(taskDTOMapper::toDTO);
 
-        if (optionalTask.isPresent())
-            return optionalTask.get();
+        if (optionalTask.isPresent()) return optionalTask.get();
+
         throw new RuntimeException("Task with id " + id + " does not exist.");
 
     }
 
     @Override
-    public Task createTask(Task task) {
-        return taskRepository.save(task);
-    }
+    public TaskDTO createTask(TaskDTO task) {
 
-    @Override
-    public Task updateTask(Long id, Task newTask) {
+        Task createdTask = taskDTOMapper.toEntity(task);
 
-        Optional<Task> needsUpdate = taskRepository.findById(id);
+        taskRepository.save(createdTask);
 
-        if (needsUpdate.isPresent()) {
-            needsUpdate.get().setContent(newTask.getContent());
-            needsUpdate.get().setDone(newTask.isDone());
-
-            return taskRepository.save(needsUpdate.get());
-        }
-        throw new RuntimeException("Task with id " + id + " does not exist.");
+        return taskDTOMapper.toDTO(createdTask);
 
     }
 
     @Override
-    public Task patchTask(Long id, Map<String, Object> fields) {
+    public TaskDTO patchTask(Long id, Map<String, Object> fields) {
 
-        Optional<Task> needsPatch = taskRepository.findById(id);
+        Optional<TaskDTO> needsPatch = taskRepository.findById(id)
+                                           .map(taskDTOMapper::toDTO);
 
         if (needsPatch.isPresent()) {
+
             fields.forEach((key, value) -> {
                 switch (key) {
                     case "content":
@@ -73,8 +79,14 @@ public class TaskServiceImpl implements TaskService {
                 }
             });
 
-            return taskRepository.save(needsPatch.get());
+            Task patchedTask = taskDTOMapper.toEntity(needsPatch.get());
+
+            taskRepository.save(patchedTask);
+
+            return taskDTOMapper.toDTO(patchedTask);
+
         }
+
         throw new RuntimeException("Task with id " + id + " does not exist.");
 
     }

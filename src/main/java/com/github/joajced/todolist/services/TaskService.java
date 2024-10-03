@@ -1,21 +1,19 @@
 package com.github.joajced.todolist.services;
 
-import com.github.joajced.todolist.model.Task;
+import com.github.joajced.todolist.model.TaskDTO;
 
 import java.util.List;
 import java.util.Map;
 
 public interface TaskService {
 
-    List<Task> getTasks();
+    List<TaskDTO> getTasks();
 
-    Task getTaskById(Long id);
+    TaskDTO getTaskById(Long id);
 
-    Task createTask(Task task);
+    TaskDTO createTask(TaskDTO task);
 
-    Task updateTask(Long id, Task newTask);
-
-    Task patchTask(Long id, Map<String, Object> fields);
+    TaskDTO patchTask(Long id, Map<String, Object> fields);
 
     void deleteTask(Long id);
 
