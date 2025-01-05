@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 public class TaskDTOMapper {
 
     public TaskDTO toDTO(Task task) {
+
         return new TaskDTO(
                 task.getId(),
                 task.getContent(),
@@ -14,6 +15,7 @@ public class TaskDTOMapper {
     }
 
     public Task toEntity(TaskDTO dto) {
+
         return new Task(
                 dto.getId(),
                 dto.getContent(),

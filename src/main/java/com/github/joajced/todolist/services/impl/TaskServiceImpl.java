@@ -24,7 +24,6 @@ public class TaskServiceImpl implements TaskService {
 
         this.taskRepository = taskRepository;
         this.taskDTOMapper = taskDTOMapper;
-
     }
 
     @Override
@@ -34,7 +33,6 @@ public class TaskServiceImpl implements TaskService {
                 .stream()
                 .map(taskDTOMapper::toDTO)
                 .collect(Collectors.toList());
-
     }
 
     @Override
@@ -46,7 +44,6 @@ public class TaskServiceImpl implements TaskService {
         if (optionalTask.isPresent()) return optionalTask.get();
 
         throw new RuntimeException("Task with id " + id + " does not exist.");
-
     }
 
     @Override
@@ -57,7 +54,6 @@ public class TaskServiceImpl implements TaskService {
         taskRepository.save(createdTask);
 
         return taskDTOMapper.toDTO(createdTask);
-
     }
 
     @Override
@@ -88,12 +84,11 @@ public class TaskServiceImpl implements TaskService {
         }
 
         throw new RuntimeException("Task with id " + id + " does not exist.");
-
     }
 
     @Override
     public void deleteTask(Long id) {
+
         taskRepository.deleteById(id);
     }
-
 }

@@ -17,32 +17,37 @@ public class TaskController {
 
     @Autowired
     public TaskController(TaskService taskService) {
+
         this.taskService = taskService;
     }
 
     @GetMapping("/tasks")
     public List<TaskDTO> getTasks() {
+
         return taskService.getTasks();
     }
 
     @GetMapping("/tasks/{id}")
     public TaskDTO getTaskById(@PathVariable Long id) {
+
         return taskService.getTaskById(id);
     }
 
     @PostMapping("/tasks")
     public TaskDTO createTask(@RequestBody TaskDTO task) {
+
         return taskService.createTask(task);
     }
 
     @PatchMapping("/tasks/{id}")
     public TaskDTO patchTask(@PathVariable Long id, @RequestBody Map<String, Object> fields) {
+
         return taskService.patchTask(id, fields);
     }
 
     @DeleteMapping("/tasks/{id}")
     public void deleteTask(@PathVariable Long id) {
+
         taskService.deleteTask(id);
     }
-
 }
