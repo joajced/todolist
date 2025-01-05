@@ -5,7 +5,7 @@ getTasks();
 
 // GET request
 function getTasks() {
-    fetch("http://localhost:8080/api/tasks")
+    fetch("/api/tasks")
         .then(res => res.json())
         .then(data => processJsonData(data))
         .catch(error => {
@@ -51,7 +51,7 @@ createTaskForm.addEventListener('submit', event => {
     const formData = new FormData(event.target);
     const formObject = Object.fromEntries(formData);
 
-    fetch("http://localhost:8080/api/tasks", {
+    fetch("/api/tasks", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -70,7 +70,7 @@ function patchTask(checkbox) {
     let taskPatchId = Number(checkbox.id.split('-')[1]);
     const checkboxPatch = document.getElementById(`checkbox-${taskPatchId}`);
 
-    fetch(`http://localhost:8080/api/tasks/${taskPatchId}`, {
+    fetch(`/api/tasks/${taskPatchId}`, {
         method: 'PATCH',
         headers: {
         'Content-Type': 'application/json',
@@ -119,7 +119,7 @@ taskList.addEventListener("submit", event => {
     const formData = new FormData(event.target);
     const formObject = Object.fromEntries(formData);
 
-    fetch(`http://localhost:8080/api/tasks/${taskRenameId}`, {
+    fetch(`/api/tasks/${taskRenameId}`, {
         method: 'PATCH',
         headers: {
         'Content-Type': 'application/json',
@@ -140,7 +140,7 @@ taskList.addEventListener("submit", event => {
 function deleteTask(button) {
     let taskDeleteId = Number(button.id.split('-')[1]);
 
-    fetch(`http://localhost:8080/api/tasks/${taskDeleteId}`, {
+    fetch(`/api/tasks/${taskDeleteId}`, {
         method: 'DELETE'
     }).then(() => {
         refreshContent();

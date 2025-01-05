@@ -10,7 +10,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/api")
-@CrossOrigin(origins="http://127.0.0.1:5500")
 public class TaskController {
 
     private final TaskService taskService;
