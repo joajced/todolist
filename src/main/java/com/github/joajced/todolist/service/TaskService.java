@@ -56,12 +56,12 @@ public class TaskService {
 
     // PATCH requests
 
-    public Task patchTask(Long taskId, Map<String, Object> fields) {
+    public Task patchTask(Long taskId, Map<String, Object> taskFields) {
 
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new RuntimeException("Task with id " + taskId + " does not exist."));
 
-        fields.forEach((key, value) -> {
+        taskFields.forEach((key, value) -> {
 
             switch (key) {
 
