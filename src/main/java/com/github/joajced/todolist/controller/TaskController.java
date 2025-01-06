@@ -1,7 +1,7 @@
 package com.github.joajced.todolist.controller;
 
-import com.github.joajced.todolist.model.TaskDTO;
-import com.github.joajced.todolist.services.TaskService;
+import com.github.joajced.todolist.model.Task;
+import com.github.joajced.todolist.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,25 +21,25 @@ public class TaskController {
     }
 
     @GetMapping("/tasks")
-    public List<TaskDTO> getTasks() {
+    public List<Task> getTasks() {
 
         return taskService.getTasks();
     }
 
     @GetMapping("/tasks/{id}")
-    public TaskDTO getTaskById(@PathVariable Long id) {
+    public Task getTaskById(@PathVariable Long id) {
 
         return taskService.getTaskById(id);
     }
 
     @PostMapping("/tasks")
-    public TaskDTO createTask(@RequestBody TaskDTO task) {
+    public Task createTask(@RequestBody Task task) {
 
         return taskService.createTask(task);
     }
 
     @PatchMapping("/tasks/{id}")
-    public TaskDTO patchTask(@PathVariable Long id, @RequestBody Map<String, Object> fields) {
+    public Task patchTask(@PathVariable Long id, @RequestBody Map<String, Object> fields) {
 
         return taskService.patchTask(id, fields);
     }
