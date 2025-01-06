@@ -1,19 +1,101 @@
 package com.github.joajced.todolist.service;
 
+import com.github.joajced.todolist.model.Project;
 import com.github.joajced.todolist.model.Task;
+import com.github.joajced.todolist.repository.ProjectRepository;
+import com.github.joajced.todolist.repository.TaskRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 
-public interface TaskService {
+@Service
+public class TaskService {
 
-    List<Task> getTasks();
+    private final TaskRepository taskRepository;
+    private final ProjectRepository projectRepository;
 
-    Task getTaskById(Long id);
+    @Autowired
+    public TaskService(TaskRepository taskRepository, ProjectRepository projectRepository) {
 
-    Task createTask(Task task);
+        this.taskRepository = taskRepository;
+        this.projectRepository = projectRepository;
+    }
 
-    Task patchTask(Long id, Map<String, Object> fields);
 
-    void deleteTask(Long id);
+    // GET requests
+
+    public List<Task> getTasks() {
+
+        return taskRepository.findAll();
+    }
+
+    public Task getTaskById(Long taskId) {
+
+        return taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task with id " + taskId + " does not exist."));
+    }
+
+    public List<Task> getTasksByProjectId(Long projectId) {
+
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("Project with id " + projectId + "does not exist."));
+
+        return project.getTasks();
+    }
+
+
+    // POST requests
+
+    public Task createTask(Task task) {
+
+        return taskRepository.save(task);
+    }
+
+
+    // PATCH requests
+
+    public Task patchTask(Long taskId, Map<String, Object> fields) {
+
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task with id " + taskId + " does not exist."));
+
+        fields.forEach((key, value) -> {
+
+            switch (key) {
+
+                case "content":
+
+                    task.setContent((String) value);
+                    break;
+
+                case "done":
+
+                    task.setDone((Boolean) value);
+                    break;
+
+                case "project":
+
+                    Long projectId = (Long) value;
+                    Project project = projectRepository.findById(projectId)
+                            .orElseThrow(() -> new RuntimeException("Project with id " + projectId + " does not exist."));
+
+                    task.setProject(project);
+                    break;
+
+                default:
+                    throw new IllegalArgumentException("Unknown field: " + key);
+            }
+        });
+
+        return taskRepository.save(task);
+    }
+
+    // DELETE requests
+
+    public void deleteTask(Long taskId) {
+
+        taskRepository.deleteById(taskId);
+    }
 }
