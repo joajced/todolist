@@ -27,9 +27,9 @@ public class ProjectController {
     }
 
     @GetMapping("/projects/{id}")
-    public Project getProjectById(@PathVariable Long projectId) {
+    public Project getProjectById(@PathVariable Long id) {
 
-        return projectService.getProjectById(projectId);
+        return projectService.getProjectById(id);
     }
 
     @PostMapping("/projects")
@@ -39,14 +39,14 @@ public class ProjectController {
     }
 
     @PatchMapping("/projects/{id}")
-    public Project renameProject(@PathVariable Long projectId, @RequestBody Map<String, Object> projectFields) {
+    public Project renameProject(@PathVariable Long id, @RequestBody Map<String, Object> fields) {
 
-        return projectService.renameProject(projectId, projectFields);
+        return projectService.renameProject(id, fields);
     }
 
     @DeleteMapping("/projects/{id}")
-    public void deleteProject(@PathVariable Long projectId) {
+    public void deleteProject(@PathVariable Long id) {
 
-        projectService.deleteProject(projectId);
+        projectService.deleteProject(id);
     }
 }

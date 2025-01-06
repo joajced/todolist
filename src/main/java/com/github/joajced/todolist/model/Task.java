@@ -1,5 +1,7 @@
 package com.github.joajced.todolist.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,5 +28,12 @@ public class Task {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "project_id", nullable = false)
+    @JsonBackReference
     private Project project;
+
+    @JsonProperty("project_id")
+    public Long getProjectId() {
+
+        return this.project != null ? this.project.getId() : null;
+    }
 }

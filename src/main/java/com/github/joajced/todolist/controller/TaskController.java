@@ -27,15 +27,15 @@ public class TaskController {
     }
 
     @GetMapping("/tasks/{id}")
-    public Task getTaskById(@PathVariable Long taskId) {
+    public Task getTaskById(@PathVariable Long id) {
 
-        return taskService.getTaskById(taskId);
+        return taskService.getTaskById(id);
     }
 
     @GetMapping("/projects/{id}/tasks")
-    public List<Task> getTasksByProjectId(@PathVariable Long projectId) {
+    public List<Task> getTasksByProjectId(@PathVariable Long id) {
 
-        return taskService.getTasksByProjectId(projectId);
+        return taskService.getTasksByProjectId(id);
     }
 
     @PostMapping("/tasks")
@@ -45,14 +45,14 @@ public class TaskController {
     }
 
     @PatchMapping("/tasks/{id}")
-    public Task patchTask(@PathVariable Long taskId, @RequestBody Map<String, Object> taskFields) {
+    public Task patchTask(@PathVariable Long id, @RequestBody Map<String, Object> fields) {
 
-        return taskService.patchTask(taskId, taskFields);
+        return taskService.patchTask(id, fields);
     }
 
     @DeleteMapping("/tasks/{id}")
-    public void deleteTask(@PathVariable Long taskId) {
+    public void deleteTask(@PathVariable Long id) {
 
-        taskService.deleteTask(taskId);
+        taskService.deleteTask(id);
     }
 }

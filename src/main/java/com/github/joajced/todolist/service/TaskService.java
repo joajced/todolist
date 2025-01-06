@@ -56,12 +56,12 @@ public class TaskService {
 
     // PATCH requests
 
-    public Task patchTask(Long taskId, Map<String, Object> taskFields) {
+    public Task patchTask(Long taskId, Map<String, Object> fields) {
 
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new RuntimeException("Task with id " + taskId + " does not exist."));
 
-        taskFields.forEach((key, value) -> {
+        fields.forEach((key, value) -> {
 
             switch (key) {
 
@@ -75,9 +75,13 @@ public class TaskService {
                     task.setDone((Boolean) value);
                     break;
 
-                case "project":
+                case "project_id":
 
-                    Long projectId = (Long) value;
+                    /*  The number given as JSON input is automatically
+                     *  interpreted as Integer, which is why it needs to
+                     *  be converted into a Long
+                     */
+                    Long projectId = ((Integer) value).longValue();
                     Project project = projectRepository.findById(projectId)
                             .orElseThrow(() -> new RuntimeException("Project with id " + projectId + " does not exist."));
 
