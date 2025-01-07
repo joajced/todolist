@@ -1,155 +1,223 @@
+const taskCreateForm = document.getElementById("task-create-form");
 const taskList = document.getElementById("task-list");
-const createTaskForm = document.getElementById("create-task-form");
 
+// Load all tasks
+// Needs to be replace with Project View
 getTasks();
 
-// GET request
+
+function refreshContent() {
+
+    taskList.innerHTML = "";
+    getTasks();
+}
+
+/*
+-------------------------------------------
+                   GET
+-------------------------------------------
+*/
+
 function getTasks() {
+
     fetch("http://localhost:8080/api/tasks")
         .then(res => res.json())
         .then(data => processJsonData(data))
         .catch(error => {
-            console.error('There was a problem with the fetch operation:', error);
-    });
-};
-
-function processJsonData(jsonData) {
-    jsonData.forEach(item => {
-        const listItem = document.createElement("div");
-        listItem.classList.add("task");
-        listItem.setAttribute("id", `task-${item.id}`);
+            console.error("There was a problem with the fetch operation: ", error);
         
-        listItem.innerHTML = `<input type="checkbox" class="task-check" id="checkbox-${item.id}" onclick="patchTask(this)">
-                              <label for="checkbox-${item.id}" class="task-content" id="content-${item.id}">${item.content}</label>
-
-                              <div class="button-container" id="task-${item.id}-button-container-normal">
-                                  <button type="button" class="task-button task-edit" id="edit-${item.id}" onclick="showRename(this)">EDIT</button>
-                                  <button type="button" class="task-button task-delete" id="delete-${item.id}" onclick="deleteTask(this)">DELETE</button>
-                              </div>
-                              
-                              <form action="submit" class="update-task-form hide" id="task-${item.id}-update-form">
-                                  <input type="text" name="content" placeholder="Edit task..." autocomplete="off">
-                  
-                                  <div class="button-container" id="task-${item.id}-button-container-edit">
-                                      <button type="submit" class="task-button task-submit" id="submit-${item.id}">SAVE</button>
-                                      <button type="button" class="task-button task-cancel" id="cancel-${item.id}" onclick="hideRename(this)">CANCEL</button>
-                                  </div>
-                              </form>`;
-
-        taskList.appendChild(listItem);
-
-        if (item.done === true) {
-            document.getElementById(`checkbox-${item.id}`).checked = true;
-        }
     });
 };
 
-// POST request
-createTaskForm.addEventListener('submit', event => {
+function processJsonData(data) {
+
+    data.forEach(jsonTask => {
+
+        // New task
+        const task = document.createElement("div");
+        task.classList.add("task");
+        task.setAttribute("id", `task-${jsonTask.id}`);
+        
+        // Fill DIV
+        task.innerHTML = `<div class="task-normal-view-container" id="task-normal-view-container-${jsonTask.id}">
+
+                              <input type="checkbox" class="task-checkbox" id="task-checkbox-${jsonTask.id}" onclick="patchTask(this)">
+                              <label for="task-checkbox-${jsonTask.id}" class="task-content" id="task-content-${jsonTask.id}">${jsonTask.content}</label>
+
+                              <div class="task-button-container" id="task-button-container-${jsonTask.id}">
+
+                                  <button type="button" class="task-button" id="task-button-edit-${jsonTask.id}" onclick='switchView(this, "update")'>EDIT</button>
+                                  <button type="button" class="task-button" id="task-button-delete-${jsonTask.id}" onclick="deleteTask(this)">DELETE</button>
+
+                              </div>
+
+                          </div>
+                              
+                          <form action="submit" class="task-update-form" id="task-update-form-${jsonTask.id}">
+
+                              <input id="task-update-form-input-${jsonTask.id}" type="text" name="content" placeholder="Edit task..." autocomplete="off" required>
+                  
+                              <div class="task-button-container" id="task-button-container-${jsonTask.id}-update">
+
+                                  <button type="submit" class="task-button" id="task-button-submit-${jsonTask.id}">SAVE</button>
+                                  <button type="button" class="task-button" id="task-button-cancel-${jsonTask.id}" onclick='switchView(this, "normal")'>CANCEL</button>
+
+                              </div>
+
+                          </form>`;
+        
+        // Add to task list
+        taskList.appendChild(task);
+
+        // Display checkmark correctly
+        document.getElementById(`task-checkbox-${jsonTask.id}`).checked = jsonTask.done;
+    });
+};
+
+
+/*
+-------------------------------------------
+                  POST
+-------------------------------------------
+*/
+
+taskCreateForm.addEventListener('submit', event => {
+
     event.preventDefault();
 
     const formData = new FormData(event.target);
     const formObject = Object.fromEntries(formData);
 
     fetch("http://localhost:8080/api/tasks", {
+
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(formObject)
+
     }).then(() => {
-        createTaskForm.reset();
+
+        taskCreateForm.reset();
         refreshContent();
+
     }).catch(error => {
-        console.error('There was a problem with the fetch operation:', error);
+
+        console.error("POST request failed: ", error);
+
     });
 });
 
-// PATCH request (done)
-function patchTask(checkbox) {
-    let taskPatchId = Number(checkbox.id.split('-')[1]);
-    const checkboxPatch = document.getElementById(`checkbox-${taskPatchId}`);
 
-    fetch(`http://localhost:8080/api/tasks/${taskPatchId}`, {
+/*
+-------------------------------------------
+                  PATCH
+-------------------------------------------
+*/
+
+function patchTask(checkbox) {
+
+    // Example: task-checkbox-1
+    let taskId = Number(checkbox.id.split('-')[2]);
+    const thisCheckbox = document.getElementById(`task-checkbox-${taskId}`);
+
+    fetch(`http://localhost:8080/api/tasks/${taskId}`, {
+
         method: 'PATCH',
         headers: {
         'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ "done": checkboxPatch.checked }),
+        body: JSON.stringify({ "done": thisCheckbox.checked }),
+
     }).catch(error => {
-        console.error('There was a problem with the fetch operation:', error);
+
+        console.error("PATCH request failed: ", error);
+
     });
 }
 
-// PATCH request (content)
-function showRename(button) {
-    let taskRenameId = Number(button.id.split('-')[1]);
-    const updateForm = document.getElementById(`task-${taskRenameId}-update-form`);
-    const checkbox = document.getElementById(`checkbox-${taskRenameId}`)
-    const label = document.getElementById(`content-${taskRenameId}`);
-    const buttonContainer = document.getElementById(`task-${taskRenameId}-button-container-normal`)
+function switchView(button, direction) {
 
-    updateForm.classList.remove("hide");
-    
-    checkbox.classList.add("hide");
-    label.classList.add("hide");
-    buttonContainer.classList.add("hide");
-}
+    // Example: task-button-cancel-1
+    let taskId = Number(button.id.split('-')[3]);
 
-function hideRename(button) {
-    let taskCancelId = Number(button.id.split('-')[1]);
-    const updateForm = document.getElementById(`task-${taskCancelId}-update-form`);
-    const checkbox = document.getElementById(`checkbox-${taskCancelId}`)
-    const label = document.getElementById(`content-${taskCancelId}`);
-    const buttonContainer = document.getElementById(`task-${taskCancelId}-button-container-normal`)
+    const normalView = document.getElementById(`task-normal-view-container-${taskId}`);
+    const updateForm = document.getElementById(`task-update-form-${taskId}`);
 
-    checkbox.classList.remove("hide");
-    label.classList.remove("hide");
-    buttonContainer.classList.remove("hide");
+    if (direction == "update") {
 
-    updateForm.classList.add("hide");
-    updateForm.reset();
+        const currentContent = document.getElementById(`task-content-${taskId}`).textContent;
+        const updateFormInput = document.getElementById(`task-update-form-input-${taskId}`);
+
+        updateFormInput.value = currentContent;
+        normalView.style.display = "none";
+        updateForm.style.display = "flex";
+
+    } else {
+
+        normalView.style.display = "flex";
+        updateForm.style.display = "none";
+        updateForm.reset();
+    }
 }
 
 taskList.addEventListener("submit", event => {
+
     event.preventDefault();
 
-    let taskRenameId = Number(event.target.id.split('-')[1]);
+    // task-button-submit-1
+    let taskId = Number(event.target.id.split('-')[3]);
     
     const formData = new FormData(event.target);
     const formObject = Object.fromEntries(formData);
 
-    fetch(`http://localhost:8080/api/tasks/${taskRenameId}`, {
+    fetch(`http://localhost:8080/api/tasks/${taskId}`, {
+
         method: 'PATCH',
         headers: {
         'Content-Type': 'application/json',
         },
         body: JSON.stringify({ "content": formObject.content }),
+
     }).then(res => res.json())
     .then(data => {
-        const updatedTask = document.getElementById(`content-${taskRenameId}`);
-        updatedTask.innerText = data.content;
-        hideRename(document.getElementById(`cancel-${taskRenameId}`));
+
+        const taskContent = document.getElementById(`task-content-${taskId}`);
+        taskContent.innerText = data.content;
+
+        switchView(document.getElementById(`task-button-cancel-${taskId}`, "normal"));
         event.target.reset();
+
     }).catch(error => {
-        console.error('There was a problem with the fetch operation:', error);
+
+        console.error("PATCH request failed: ", error);
+
     });
 });
 
-// DELETE request
-function deleteTask(button) {
-    let taskDeleteId = Number(button.id.split('-')[1]);
 
-    fetch(`http://localhost:8080/api/tasks/${taskDeleteId}`, {
+/*
+-------------------------------------------
+                 DELETE
+-------------------------------------------
+*/
+
+function deleteTask(button) {
+    
+    // Example: task-button-delete-1
+    let taskId = Number(button.id.split('-')[3]);
+
+    fetch(`http://localhost:8080/api/tasks/${taskId}`, {
+
         method: 'DELETE'
+
     }).then(() => {
+
         refreshContent();
+
     }).catch(error => {
-        console.error('There was a problem with the fetch operation:', error);
+
+        console.error("DELETE request failed: ", error);
+
     });
 };
-
-function refreshContent() {
-    taskList.innerHTML = "";
-    getTasks();
-}

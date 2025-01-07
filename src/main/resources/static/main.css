@@ -1,15 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap');
 
-* {box-sizing: border-box;}
+* { box-sizing: border-box;}
+
+
+/* Background */
 
 body, html {
-    background: #0D0D0D;
+
+    background: #ffffff;
     margin: 0;
     padding: 0;
 }
 
 header {
+
     position: fixed;
     display: flex;
     align-items: center;
@@ -19,48 +24,56 @@ header {
     z-index: 100;
 
     width: 100%;
-    height: 15%;
+    height: 12%;
 
-    padding: 0 60px;
+    padding: 0 40px;
 
-    background-color: #0D0D0D;
-
-    border-bottom: solid #dbdbdb 2px;
+    background-color: #00a82d;
 }
 
 .logo {
-    font-size: 28px;
-    font-family: "Playfair Display", serif;
+
+    font: 28px "Playfair Display", serif;
     font-weight: 700;
-    color: white;
+    color: #ffffff;
 
     margin: 0;
 
     user-select: none;
+    cursor: pointer;
 }
 
-.main-section {
+
+/*
+-------------------------------------------
+                  TASKS
+-------------------------------------------
+*/
+
+.task-section {
+
     position: absolute;
     bottom: 0;
 
     overflow-y: scroll;
 
-    height: 85%;
+    height: 88%;
     width: 60%;
 
-    padding: 30px 60px 120px 60px;
+    padding: 30px 5% 60px 5%;
 }
 
-.task-list {
+.tasks-list {
+
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 4px;
     width: 100%;
 }
 
-/* ----------------------------- TASK ELEMENT ----------------------------- */
+/* Task element: common container formatting */
+.task, .task-create-container {
 
-.task, .create-task-form-container {
     position: relative;
 
     display: flex;
@@ -72,33 +85,44 @@ header {
 
     margin: 0;
     
-    padding: 16px 24px;
-    border: solid #dbdbdb 2px;
-    border-radius: 10px;
+    padding: 16px;
+    border-bottom: solid #808080 1px;
 
     user-select: none;
 }
 
-.task-check {
+/* Space between create form and task list */
+.task-create-container {
+
+    margin-bottom: 16px;
+}
+
+/* Checkbox */
+.task-checkbox {
+
     margin: 0 16px 0 0;
     cursor: pointer;
+
+    width: 16px;
+    height: 16px;
 }
 
+/* Task content (text)*/
 .task-content {
-    font-family: "Roboto", sans-serif;
-    font-size: 16px;
-    color: white;
 
-    margin: 0;
+    font: 16px "Roboto", sans-serif;
 }
 
-input[type="checkbox"]:checked + .task-content {
+/* Task content when checked */
+.task-checkbox:checked + .task-content {
+
     text-decoration: line-through;
-    font-style: italic;
-    color: #B1B1B1;
+    color: #808080;
 }
 
-.button-container {
+/* Buttons */
+.task-button-container {
+
     position: relative;
     top: 0;
     right: 0;
@@ -110,108 +134,75 @@ input[type="checkbox"]:checked + .task-content {
     margin-left: auto;
     
     height: 100%;
-    width: 160px;
+    width: 30%;
 }
 
 .task-button {
+
     height: 100%;
 
     display: inline-block;
 
     background: none;
     border: none;
-    border-radius: 4px;
-    outline: none;
 
-    color: #A78CFF;
-    font-family: "Roboto", sans-serif;
-    font-weight: 700;
-    font-size: 14px;
+    font: 14px "Roboto", sans-serif;
+    font-weight: 500;
 
-    padding: 0 5%;
-    margin-left: 6px;
+    padding: 4px 8px;
+    margin-left: 8px;
 
     cursor: pointer;
     user-select: none;
-
-    transition: background 0.15s;
 }
 
-.task-button:hover {
-    background: #393939;
-}
+/* Forms */
+.task-create-form, .task-normal-view-container, .task-update-form {
 
-.task-button:active {
-    background: #5a5a5a;
-}
-
-.task-delete, .task-cancel {
-    color: rgb(200, 64, 64);
-}
-
-/* ----------------------------- CREATE TASK FORM ----------------------------- */
-
-.create-task-form-container {
-    margin-bottom: 32px;
-    border-color: #8e8e8e;
-    transition: border-color 0.15s ease-in-out;
-}
-
-.create-task-form-container:hover {
-    border-color: #dbdbdb;
-}
-
-.create-task-form-container:focus-within {
-    border-color: #A78CFF;
-}
-
-.create-task-form, .update-task-form {
     width: 100%;
     height: 100%;
 
     position: relative;
     display: flex;
+    align-items: center;
+    justify-content: right;
 }
 
-.create-task-form input, .update-task-form input {
+.task-create-form input, .task-update-form input {
+
     background: none;
     border: none;
     padding: 0;
+    margin-right: auto;
 
-    width: 90%;
+    width: 50%;
 
-    font-family: "Roboto", sans-serif;
-    font-size: 16px;
-    color: white;
+    font: 16px "Roboto", sans-serif;
 }
 
-.create-task-form input:focus, .update-task-form input:focus {
+/* Remove outline when form is selected */
+.task-create-form input:focus, .task-update-form input:focus {
+
     outline: none;
 }
 
-.create-task-form ::placeholder, .update-task-form ::placeholder {
-    font-family: "Roboto", sans-serif;
+/* Form placeholders */
+.task-create-form ::placeholder, .task-update-form ::placeholder {
+
+    font: 16px "Roboto", sans-serif;
     font-style: italic;
-    font-size: 16px;
-    color: #8e8e8e;
+    color: #808080;
     opacity: 1;
 }
 
-.create-task-form-container button {
-    color: #8e8e8e;
-    transition: color 0.15s ease-in-out;
-}
+/* Hide the update form by default */
+.task-update-form {
 
-.create-task-form-container:hover button {
-    color: #dbdbdb;
-}
-
-.create-task-form-container:focus-within button {
-    color: #A78CFF;
-}
-
-/* ----------------------------- UPDATE TASK FORM ----------------------------- */
-
-.hide {
     display: none;
 }
+
+/*
+-------------------------------------------
+                PROJECTS
+-------------------------------------------
+*/

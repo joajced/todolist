@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html>
 
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,25 +9,44 @@
 </head>
 
 <body>
+
+    <!-- HEADER -->
+
     <header>
         <p class="logo">TodoMaster</p>
     </header>
 
-    <section class="main-section">
 
-        <div class="create-task-form-container">
-            <form action="submit" class="create-task-form" id="create-task-form">
-                <input type="text" name="content" placeholder="Add a new task to your list..." autocomplete="off" required>
+    <!-- TASKS -->
+
+    <section class="task-section">
+
+        <div class="task-create-container">
+
+            <form action="submit" class="task-create-form" id="task-create-form">
+
+                <input type="text" name="content" placeholder="New task..." autocomplete="off" required>
 
                 <div class="button-container">
-                    <button type="submit" class="task-button task-submit" id="submit-main">ADD</button>
+                    <button type="submit" class="task-button" id="task-create-submit">ADD</button>
                 </div>
+
             </form>
+
         </div>
 
-        <div class="task-list" id="task-list"></div>
+        <div class="task-list" id="task-list">
+
+            <!-- Tasks go here -->
+
+        </div>
 
     </section>
+
+
+    <!-- PROJECTS -->
+
+    <section class="projects"></section>
     
     <script src="script.js"></script>
 </body>
