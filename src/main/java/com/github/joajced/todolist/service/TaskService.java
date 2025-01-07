@@ -50,6 +50,15 @@ public class TaskService {
 
     public Task createTask(Task task) {
 
+        // Assign default project if no project was assigned at creation.
+        if (task.getProject() == null) {
+
+            Project defaultProject = projectRepository.findById(((Integer) 1).longValue())
+                    .orElseThrow(() -> new RuntimeException("Default project (id: 1) doesn't exist."));
+
+            task.setProject(defaultProject);
+        }
+
         return taskRepository.save(task);
     }
 
