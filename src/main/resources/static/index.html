@@ -21,6 +21,9 @@
 
     <section class="task-section">
 
+        <p class="task-section-title" id="task-section-title">Project name</p>
+        <p class="task-section-subtitle">Tasks completed: <span id="task-section-subtitle-completed">2</span>/<span id="task-section-subtitle-total">10</span></p>
+        
         <div class="task-create-container">
 
             <form action="submit" class="task-create-form" id="task-create-form">
@@ -46,7 +49,40 @@
 
     <!-- PROJECTS -->
 
-    <section class="projects"></section>
+    <section class="project-section" id="project-section">
+
+        <p class="project-section-title">Projects</p>
+
+        <div class="project-list" id="project-list-default"></div>
+
+        <div class="project-list" id="project-list">
+
+            <!-- Projects go here -->
+
+        </div>
+
+        <div class="project-list" id="project-list-create">
+
+            <div class="project" id="project-create-container">
+                <form action="submit" class="project-create-form" id="project-create-form">
+
+                    <input id="project-create-form-input" type="text" name="name" placeholder="Name new project..." autocomplete="off" required>
+
+                        <div class="project-button-container" id="project-button-container-create">
+
+                            <button type="submit" class="project-button" id="project-button-submit-create">CREATE</button>
+                            <button type="button" class="project-button project-create-switch" id="project-button-cancel-create" onclick='switchView(this, "normal")'>CANCEL</button>
+
+                        </div>
+
+                </form>
+            </div>
+
+        </div>
+
+        <button class="project-button project-create-switch" id="project-button-create" onclick='switchView(this, "update")'>NEW PROJECT</button>
+
+    </section>
     
     <script src="script.js"></script>
 </body>
