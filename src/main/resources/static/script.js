@@ -1,6 +1,9 @@
 const taskSectionTitle = document.getElementById("task-section-title");
+const spanCompleted = document.getElementById("task-section-subtitle-completed");
+const spanTotal = document.getElementById("task-section-subtitle-total");
 const taskCreateForm = document.getElementById("task-create-form");
 const taskList = document.getElementById("task-list");
+
 const projectSection = document.getElementById("project-section");
 const projectListDefault = document.getElementById("project-list-default");
 const projectList = document.getElementById("project-list");
@@ -26,14 +29,14 @@ function getTasksFromProject(projectId) {
         .then(project => {
 
             taskSectionTitle.textContent = project.name;
+            spanCompleted.textContent = project.completed;
+            spanTotal.textContent = project.total;
 
         }).catch(error => {
 
             console.error("GET project.name failed: ", error)
 
-        })
-
-    
+    });
 
     fetch(`http://localhost:8080/api/projects/${projectId}/tasks`)
         .then(res => res.json())
@@ -159,6 +162,7 @@ function processJsonProject(data) {
     });
 };
 
+// Move project selector
 projectSection.addEventListener("click", event => {
 
     if (event.target.matches(".project-name")) {
@@ -167,8 +171,6 @@ projectSection.addEventListener("click", event => {
         projectId = Number(event.target.id.split('-')[2]);
 
         if (projectId != currentProject) currentProject = projectId;
-
-        console.log(currentProject);
 
         refreshContent();
     }
@@ -264,6 +266,10 @@ function patchTask(checkbox) {
         'Content-Type': 'application/json',
         },
         body: JSON.stringify({ "done": thisCheckbox.checked }),
+
+    }).then(() => {
+
+        refreshContent();
 
     }).catch(error => {
 
