@@ -24,7 +24,7 @@ function getTasks() {
         .then(res => res.json())
         .then(data => processJsonData(data))
         .catch(error => {
-            console.error("GET request failed ", error);
+            console.error("GET request failed: ", error);
         
     });
 };
