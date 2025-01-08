@@ -24,7 +24,7 @@ getProjects();
 
 function getTasksFromProject(projectId) {
 
-    fetch(`http://localhost:8080/api/projects/${projectId}`)
+    fetch(`/api/projects/${projectId}`)
         .then(res => res.json())
         .then(project => {
 
@@ -38,7 +38,7 @@ function getTasksFromProject(projectId) {
 
     });
 
-    fetch(`http://localhost:8080/api/projects/${projectId}/tasks`)
+    fetch(`/api/projects/${projectId}/tasks`)
         .then(res => res.json())
         .then(data => processJsonTask(data))
         .catch(error => {
@@ -95,7 +95,7 @@ function processJsonTask(data) {
 
 function getProjects() {
 
-    fetch("http://localhost:8080/api/projects")
+    fetch("/api/projects")
         .then(res => res.json())
         .then(data => processJsonProject(data))
         .catch(error => {
@@ -198,7 +198,7 @@ taskCreateForm.addEventListener('submit', event => {
         }
     }
 
-    fetch("http://localhost:8080/api/tasks", {
+    fetch("/api/tasks", {
 
         method: 'POST',
         headers: {
@@ -225,7 +225,7 @@ projectCreateForm.addEventListener('submit', event => {
     const formData = new FormData(event.target);
     const formObject = Object.fromEntries(formData);
 
-    fetch("http://localhost:8080/api/projects", {
+    fetch("/api/projects", {
 
         method: 'POST',
         headers: {
@@ -259,7 +259,7 @@ function patchTask(checkbox) {
     let taskId = Number(checkbox.id.split('-')[2]);
     const thisCheckbox = document.getElementById(`task-checkbox-${taskId}`);
 
-    fetch(`http://localhost:8080/api/tasks/${taskId}`, {
+    fetch(`/api/tasks/${taskId}`, {
 
         method: 'PATCH',
         headers: {
@@ -288,7 +288,7 @@ taskList.addEventListener("submit", event => {
     const formData = new FormData(event.target);
     const formObject = Object.fromEntries(formData);
 
-    fetch(`http://localhost:8080/api/tasks/${taskId}`, {
+    fetch(`/api/tasks/${taskId}`, {
 
         method: 'PATCH',
         headers: {
@@ -322,7 +322,7 @@ projectList.addEventListener("submit", event => {
     const formData = new FormData(event.target);
     const formObject = Object.fromEntries(formData);
 
-    fetch(`http://localhost:8080/api/projects/${projectId}`, {
+    fetch(`/api/projects/${projectId}`, {
 
         method: 'PATCH',
         headers: {
@@ -358,7 +358,7 @@ function deleteTask(button) {
     // Example: task-button-delete-1
     let taskId = Number(button.id.split('-')[3]);
 
-    fetch(`http://localhost:8080/api/tasks/${taskId}`, {
+    fetch(`/api/tasks/${taskId}`, {
 
         method: 'DELETE'
 
@@ -378,7 +378,7 @@ function deleteProject(button) {
     // Example: project-button-delete-1
     let projectId = Number(button.id.split('-')[3]);
 
-    fetch(`http://localhost:8080/api/projects/${projectId}`, {
+    fetch(`/api/projects/${projectId}`, {
 
         method: 'DELETE'
 
